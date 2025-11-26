@@ -1,0 +1,282 @@
+/* 页面整体布局 */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f3f4f6;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'PingFang SC',
+  sans-serif;
+}
+
+/* 顶部栏 */
+.page-header {
+  padding: 12px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 20%, #ffffff, #4f46e5);
+}
+
+.brand-text-main {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.brand-text-sub {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* 主体：左侧列表 + 右侧内容 */
+.page-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  min-height: 0;
+}
+
+/* 左侧列表区域 */
+.sidebar {
+  border-right: 1px solid #e5e7eb;
+  background: #f9fafb;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 8px 10px;
+}
+
+.sidebar-header h2 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.sidebar-count {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.recording-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  gap: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.recording-item {
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.recording-item:hover {
+  background: #e5e7eb;
+}
+
+.recording-item-active {
+  background: #eef2ff;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.15);
+}
+
+.recording-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.recording-meta {
+  font-size: 12px;
+  color: #6b7280;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.recording-tags .tag {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #1d4ed8;
+  margin-right: 4px;
+}
+
+/* 右侧内容区域 */
+.content {
+  padding: 20px 24px 32px;
+  overflow-y: auto;
+}
+
+.content-header {
+  margin-bottom: 16px;
+}
+
+.content-title {
+  font-size: 22px;
+  margin: 0 0 6px;
+}
+
+.content-meta {
+  font-size: 13px;
+  color: #6b7280;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+/* 卡片通用 */
+.player-card,
+.share-card,
+.summary-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  margin-bottom: 14px;
+}
+
+.player-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* 分享卡片 */
+.share-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.share-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.share-badge {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.share-badge.shared {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.share-badge.not-shared {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.share-url {
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.share-url a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.share-url a:hover {
+  text-decoration: underline;
+}
+
+/* 总结卡片 */
+.summary-card h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.summary-card p {
+  font-size: 13px;
+  color: #374151;
+  margin: 0;
+}
+
+.transcript-preview {
+  color: #6b7280;
+}
+
+/* 详情区 Tabs 容器 */
+.detail-tabs {
+  margin-top: 12px;
+}
+
+/* Tab 行 */
+.tabs {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 999px;
+  background-color: #e5e7eb;
+  margin-bottom: 10px;
+  gap: 4px;
+}
+
+.tab-btn {
+  border: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  color: #6b7280;
+  transition: 0.16s all ease-out;
+  white-space: nowrap;
+}
+
+.tab-btn.active {
+  background-color: #ffffff;
+  color: #111827;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+}
+
+/* 总结要点列表 */
+.summary-list {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.summary-list li {
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+/* 完整转写段落 */
+.transcript-full {
+  margin-top: 4px;
+}
+
+.transcript-line {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.6;
+  margin: 0 0 6px;
+}
