@@ -280,3 +280,96 @@
   line-height: 1.6;
   margin: 0 0 6px;
 }
+
+/* 详情区 Tabs 容器 */
+.detail-tabs {
+  margin-top: 12px;
+}
+
+/* Tab 行 */
+.tabs {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 999px;
+  background-color: #e5e7eb;
+  margin-bottom: 10px;
+  gap: 4px;
+}
+
+.tab-btn {
+  border: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  color: #6b7280;
+  transition: 0.16s all ease-out;
+  white-space: nowrap;
+}
+
+.tab-btn.active {
+  background-color: #ffffff;
+  color: #111827;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+}
+
+/* 总结要点列表 */
+.summary-list {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.summary-list li {
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+/* 完整转写样式 */
+.transcript-full {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.transcript-line {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.6;
+  margin: 0;
+  padding: 4px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  transition: background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.transcript-line:hover {
+  background-color: #e5e7eb;
+}
+
+.transcript-line-active {
+  background-color: #eef2ff;
+  box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.25);
+}
+
+.transcript-time {
+  font-size: 11px;
+  color: #6b7280;
+  min-width: 46px;
+}
+
+.transcript-speaker {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.transcript-text {
+  flex: 1;
+}

@@ -1,7 +1,7 @@
 // src/App.tsx
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import './App.css'
-import type { Recording } from './types'
+import type { Recording, TranscriptSegment } from './types'
 import { mockRecordings } from './mockRecordings'
 
 function formatDuration(seconds: number): string {
@@ -10,6 +10,18 @@ function formatDuration(seconds: number): string {
     const s = seconds % 60
     const pad = (n: number) => n.toString().padStart(2, '0')
     return `${pad(h)}:${pad(m)}:${pad(s)}`
+}
+
+// 段落用短时间格式：mm:ss 或 hh:mm:ss
+function formatTimeShort(seconds: number): string {
+    const h = Math.floor(seconds / 3600)
+    const m = Math.floor((seconds % 3600) / 60)
+    const s = seconds % 60
+    const pad = (n: number) => n.toString().padStart(2, '0')
+    if (h > 0) {
+        return `${pad(h)}:${pad(m)}:${pad(s)}`
+    }
+    return `${pad(m)}:${pad(s)}`
 }
 
 function formatDate(iso: string): string {
@@ -25,13 +37,63 @@ function formatDate(iso: string): string {
 function App() {
     const [recordings] = useState<Recording[]>(mockRecordings)
     const [activeId, setActiveId] = useState<string>(recordings[0]?.id ?? '')
-
-    // 右侧 Tab：总结 / 转写 / 思维导图
     const [activeTab, setActiveTab] = useState<'summary' | 'transcript' | 'mindmap'>(
         'summary',
     )
 
+    // 当前高亮的转写段落索引
+    const [activeSegmentIndex, setActiveSegmentIndex] = useState<number | null>(null)
+
+    // audio 元素引用，用于跳转播放进度
+    const audioRef = useRef<HTMLAudioElement | null>(null)
+
     const activeRecording = recordings.find((r) => r.id === activeId)
+
+    const handleSelectRecording = (id: string) => {
+        setActiveId(id)
+        setActiveTab('summary') // 切换录音时回到“总结”Tab
+        setActiveSegmentIndex(null)
+        // 重置播放进度
+        if (audioRef.current) {
+            audioRef.current.currentTime = 0
+            audioRef.current.pause()
+        }
+    }
+
+    const handleSegmentClick = (index: number, segment: TranscriptSegment) => {
+        setActiveSegmentIndex(index)
+        if (audioRef.current) {
+            audioRef.current.currentTime = segment.startSeconds
+            audioRef.current
+                .play()
+                .catch(() => {
+                    // 某些浏览器可能因为自动播放策略阻止播放，静默忽略即可
+                })
+        }
+    }
+
+    // ✅ 播放时自动根据 currentTime 高亮当前段落
+    const handleTimeUpdate = () => {
+        if (!audioRef.current || !activeRecording || !activeRecording.transcriptSegments) {
+            return
+        }
+        const current = audioRef.current.currentTime
+        const segments = activeRecording.transcriptSegments
+
+        // 找到最后一个 startSeconds <= current 的段落
+        let idx = -1
+        for (let i = 0; i < segments.length; i++) {
+            if (segments[i].startSeconds <= current) {
+                idx = i
+            } else {
+                break
+            }
+        }
+
+        if (idx !== -1 && idx !== activeSegmentIndex) {
+            setActiveSegmentIndex(idx)
+        }
+    }
 
     return (
         <div className="page">
@@ -63,10 +125,7 @@ function App() {
                                     'recording-item ' +
                                     (rec.id === activeId ? 'recording-item-active' : '')
                                 }
-                                onClick={() => {
-                                    setActiveId(rec.id)
-                                    setActiveTab('summary') // 切换录音时回到“总结”Tab
-                                }}
+                                onClick={() => handleSelectRecording(rec.id)}
                             >
                                 <div className="recording-title">{rec.title}</div>
                                 <div className="recording-meta">
@@ -109,9 +168,11 @@ function App() {
                             <div className="player-card">
                                 <div className="player-title">录音播放</div>
                                 <audio
+                                    ref={audioRef}
                                     controls
                                     src={activeRecording.audioUrl}
                                     style={{ width: '100%' }}
+                                    onTimeUpdate={handleTimeUpdate} // ✅ 播放进度更新时自动高亮
                                 >
                                     您的浏览器不支持 audio 播放。
                                 </audio>
@@ -199,18 +260,37 @@ function App() {
                                         </div>
                                     )}
 
-                                    {/* 转写 Tab */}
+                                    {/* 转写 Tab：可点击跳转、行高亮 + 自动跟随播放 */}
                                     {activeTab === 'transcript' && (
                                         <div className="summary-card">
                                             <h3>完整转写</h3>
-                                            {activeRecording.transcriptFull &&
-                                            activeRecording.transcriptFull.length > 0 ? (
+                                            {activeRecording.transcriptSegments &&
+                                            activeRecording.transcriptSegments.length > 0 ? (
                                                 <div className="transcript-full">
-                                                    {activeRecording.transcriptFull.map((line, idx) => (
-                                                        <p key={idx} className="transcript-line">
-                                                            {line}
-                                                        </p>
-                                                    ))}
+                                                    {activeRecording.transcriptSegments.map(
+                                                        (seg, index) => (
+                                                            <div
+                                                                key={seg.id}
+                                                                className={
+                                                                    'transcript-line ' +
+                                                                    (index === activeSegmentIndex
+                                                                        ? 'transcript-line-active'
+                                                                        : '')
+                                                                }
+                                                                onClick={() => handleSegmentClick(index, seg)}
+                                                            >
+                                <span className="transcript-time">
+                                  {formatTimeShort(seg.startSeconds)}
+                                </span>
+                                                                {seg.speaker && (
+                                                                    <span className="transcript-speaker">
+                                    {seg.speaker}：
+                                  </span>
+                                                                )}
+                                                                <span className="transcript-text">{seg.text}</span>
+                                                            </div>
+                                                        ),
+                                                    )}
                                                 </div>
                                             ) : (
                                                 <p className="transcript-preview">暂无转写内容。</p>
