@@ -373,3 +373,40 @@
 .transcript-text {
   flex: 1;
 }
+
+.mindmap-wrapper {
+  position: relative;
+}
+
+.mindmap-container {
+  /* 这里高度宽度你已经在 inline style 写了，也可以移到这边 */
+}
+
+.mindmap-controls {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  align-items: center;
+}
+
+.mindmap-btn {
+  border: none;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f5f5f5;
+}
+
+.mindmap-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+}

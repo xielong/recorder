@@ -1,7 +1,7 @@
 // src/components/MindMapPanel.tsx
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import MindElixir from 'mind-elixir'
-import 'mind-elixir/style' // ✅ 关键：引入官方样式
+import 'mind-elixir/style'
 
 // 这里用你的 mock 数据
 const mockMindMapData: any = {
@@ -105,72 +105,138 @@ interface MindMapPanelProps {
     active: boolean
 }
 
+const SCALE_MIN = 0.4
+const SCALE_MAX = 2
+const SCALE_STEP = 0.1
+const INITIAL_SCALE = 0.7
+
 export function MindMapPanel({ active }: MindMapPanelProps) {
     const containerRef = useRef<HTMLDivElement | null>(null)
     const mindRef = useRef<any | null>(null)
+    const [scale, setScale] = useState(INITIAL_SCALE)
 
+    // 初始化 / 刷新导图
     useEffect(() => {
-        // 只有在 Tab 可见时才初始化 / 刷新，避免隐藏容器时计算尺寸异常
         if (!active) return
         if (!containerRef.current) return
 
-        // 第一次进入：初始化 mind-elixir
+        const ME: any = (MindElixir as any).default || MindElixir
+
         if (!mindRef.current) {
-            const mind = new (MindElixir as any)({
+            const mind = new ME({
                 el: containerRef.current,
-                direction: (MindElixir as any).SIDE, // 左右展开
+                direction: 2, // 左右分布
                 draggable: true,
                 contextMenu: false,
-                toolBar: false,
+                toolBar: false, // 我们自己做按钮，这里关掉内置 toolbar
                 nodeMenu: false,
                 keypress: true,
                 locale: 'zh_CN',
                 overflowHidden: false,
-                // 这些是“约束”范围，真正的缩放由下面的 mind.scale 控制
-                scaleMin: 0.4,
-                scaleMax: 2,
-                scaleSensitivity: 30,
-                handleWheel: true,
             })
 
             mind.init(mockMindMapData)
 
-            // ✅ 关键：设置一个“合适”的初始缩放，再居中
-            // 0.7 你可以自己调试成 0.6 / 0.8 看哪个最舒服
+            // 初始缩放 + 居中
             if (typeof mind.scale === 'function') {
-                mind.scale(0.7)
+                mind.scale(INITIAL_SCALE)
             }
             if (typeof mind.toCenter === 'function') {
                 mind.toCenter()
             }
 
             mindRef.current = mind
+            setScale(INITIAL_SCALE)
         } else {
-            // 已经初始化过：切 Tab 回来时不要改缩放，只做一次居中 & 刷新布局
             const mind = mindRef.current
             mind.refresh(mockMindMapData)
-
             if (typeof mind.toCenter === 'function') {
                 mind.toCenter()
             }
         }
     }, [active])
 
+    // 自定义缩放控制
+    const applyScale = (next: number) => {
+        if (!mindRef.current || typeof mindRef.current.scale !== 'function') return
+        const clamped = Math.max(SCALE_MIN, Math.min(SCALE_MAX, next))
+        mindRef.current.scale(clamped)
+        setScale(clamped)
+    }
+
+    const handleZoomIn = () => {
+        applyScale(scale + SCALE_STEP)
+    }
+
+    const handleZoomOut = () => {
+        applyScale(scale - SCALE_STEP)
+    }
+
+    const handleCenter = () => {
+        if (mindRef.current && typeof mindRef.current.toCenter === 'function') {
+            mindRef.current.toCenter()
+        }
+    }
+
+    const handleReset = () => {
+        applyScale(INITIAL_SCALE)
+        handleCenter()
+    }
 
     return (
         <div className="summary-card">
             <h3>思维导图（Mock）</h3>
-            <div
-                ref={containerRef}
-                className="mindmap-container"
-                style={{
-                    height: '480px',
-                    width: '100%',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    background: '#111',
-                }}
-            />
+
+            <div className="mindmap-wrapper">
+                <div
+                    ref={containerRef}
+                    className="mindmap-container"
+                    style={{
+                        height: '480px',
+                        width: '100%',
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        background: '#111',
+                    }}
+                />
+
+                {/* 底部控制条：缩小 / 还原 / 放大 / 居中 */}
+                <div className="mindmap-controls">
+                    <button
+                        type="button"
+                        className="mindmap-btn"
+                        onClick={handleZoomOut}
+                        aria-label="Zoom out"
+                    >
+                        −
+                    </button>
+                    <button
+                        type="button"
+                        className="mindmap-btn"
+                        onClick={handleReset}
+                        aria-label="Reset zoom"
+                    >
+                        1x
+                    </button>
+                    <button
+                        type="button"
+                        className="mindmap-btn"
+                        onClick={handleZoomIn}
+                        aria-label="Zoom in"
+                    >
+                        +
+                    </button>
+                    <button
+                        type="button"
+                        className="mindmap-btn"
+                        onClick={handleCenter}
+                        aria-label="Center map"
+                    >
+                        ⊙
+                    </button>
+                </div>
+            </div>
+
             <p className="mindmap-tip">
                 当前为前端 Mock 思维导图，后续可以替换为后端返回的真实结构。
             </p>
