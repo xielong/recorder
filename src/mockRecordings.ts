@@ -4,15 +4,15 @@ import type { Recording } from './types'
 export const mockRecordings: Recording[] = [
     {
         id: 'rec-001',
-        title: 'superhexa 项目周会 · 路线规划讨论',
+        title: '项目周会 · 路线规划讨论',
         createdAt: '2025-11-18T14:00:00+08:00',
         durationSeconds: 5025, // 01:23:45
         speaker: 'Lucas',
-        tags: ['周会', '产品评审', 'superhexa'],
+        tags: ['周会', '产品评审'],
         audioUrl: '/audio/my-meeting-2025-11-25.mp3', // 先占位
 
         isShared: true,
-        shareUrl: 'https://share.superhexa.ai/rec/rec-001',
+        shareUrl: 'https://share.mygithub.ai/rec/rec-001',
 
         summary:
             '本次会议对 Q4 版本路线推荐能力进行了整体评审，明确多方案对比、拥堵提示和备选路线为三大重点。',
