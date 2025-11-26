@@ -2,6 +2,7 @@
 import { useRef, useState } from 'react'
 import './App.css'
 import type { Recording, TranscriptSegment } from './types'
+import { MindMapPanel } from './components/MindMapPanel'
 import { mockRecordings } from './mockRecordings'
 import { HeaderBar } from './components/HeaderBar'
 import { RecordingList } from './components/RecordingList'

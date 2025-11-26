@@ -1,8 +1,9 @@
 // src/components/MindMapPanel.tsx
 import { useEffect, useRef } from 'react'
 import MindElixir from 'mind-elixir'
+//import 'mind-elixir/dist/mind-elixir.css'
 
-// ====== Mock 思维导图数据（按 mind-elixir 的数据结构）======
+// 这里用你之前的 mock 数据
 const mockMindMapData: any = {
     nodeData: {
         id: 'root',
@@ -119,32 +120,45 @@ interface MindMapPanelProps {
     active: boolean
 }
 
-export const MindMapPanel: React.FC<MindMapPanelProps> = ({ active }) => {
+export function MindMapPanel({ active }: MindMapPanelProps) {
     const containerRef = useRef<HTMLDivElement | null>(null)
-    const instanceRef = useRef<any | null>(null)
+    const mindRef = useRef<any | null>(null)
 
     useEffect(() => {
         if (!active) return
         if (!containerRef.current) return
 
-        // 只初始化一次
-        if (!instanceRef.current) {
+        if (!mindRef.current) {
             const ME: any = (MindElixir as any).default || MindElixir
             const mind = new ME({
                 el: containerRef.current,
-                direction: ME.SIDE,
+                direction: ME.SIDE, // 左右展开
                 draggable: true,
                 contextMenu: false,
                 toolBar: false,
                 nodeMenu: false,
-                keypress: false,
+                keypress: true,
                 locale: 'zh_CN',
                 overflowHidden: false,
+                scaleMin: 0.4,
+                scaleMax: 2,
+                scaleSensitivity: 30,
+                handleWheel: true,
             })
+
             mind.init(mockMindMapData)
-            instanceRef.current = mind
+
+            if (typeof (mind as any).toCenter === 'function') {
+                ;(mind as any).toCenter()
+            }
+
+            mindRef.current = mind
         } else {
-            instanceRef.current.refresh(mockMindMapData)
+            const mind = mindRef.current
+            mind.refresh(mockMindMapData)
+            if (typeof (mind as any).toCenter === 'function') {
+                ;(mind as any).toCenter()
+            }
         }
     }, [active])
 
@@ -168,3 +182,4 @@ export const MindMapPanel: React.FC<MindMapPanelProps> = ({ active }) => {
         </div>
     )
 }
+
