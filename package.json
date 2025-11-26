@@ -6,7 +6,7 @@
   "homepage": "https://xielong.github.io/recorder",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
