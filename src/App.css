@@ -1,3 +1,22 @@
+/* ===== 全局基础 ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
 /* 页面整体布局 */
 .page {
   min-height: 100vh;
@@ -8,9 +27,9 @@
   sans-serif;
 }
 
-/* 顶部栏 */
+/* ===== 顶部栏 ===== */
 .page-header {
-  padding: 12px 24px;
+  padding: 12px 16px;
   border-bottom: 1px solid #e5e7eb;
   background: #ffffff;
 }
@@ -38,19 +57,21 @@
   color: #6b7280;
 }
 
-/* 主体：左侧列表 + 右侧内容 */
+/* ===== 主体：左列表 + 右内容 ===== */
+
+/* 默认：移动端一列上下排布 */
 .page-main {
   flex: 1;
-  display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
   min-height: 0;
 }
 
 /* 左侧列表区域 */
 .sidebar {
-  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
   background: #f9fafb;
-  padding: 16px 12px;
+  padding: 12px 12px 16px;
   display: flex;
   flex-direction: column;
 }
@@ -82,6 +103,7 @@
   flex-direction: column;
 }
 
+/* 单条录音项 */
 .recording-item {
   padding: 8px 10px;
   border-radius: 10px;
@@ -126,7 +148,7 @@
 
 /* 右侧内容区域 */
 .content {
-  padding: 20px 24px 32px;
+  padding: 16px 16px 24px;
   overflow-y: auto;
 }
 
@@ -135,7 +157,7 @@
 }
 
 .content-title {
-  font-size: 22px;
+  font-size: 20px;
   margin: 0 0 6px;
 }
 
@@ -147,7 +169,7 @@
   align-items: center;
 }
 
-/* 卡片通用 */
+/* ===== 卡片通用 ===== */
 .player-card,
 .share-card,
 .summary-card {
@@ -196,6 +218,7 @@
 .share-url {
   font-size: 13px;
   color: #4b5563;
+  word-break: break-all;
 }
 
 .share-url a {
@@ -223,12 +246,11 @@
   color: #6b7280;
 }
 
-/* 详情区 Tabs 容器 */
+/* ===== Tabs 区域 ===== */
 .detail-tabs {
   margin-top: 12px;
 }
 
-/* Tab 行 */
 .tabs {
   display: inline-flex;
   padding: 4px;
@@ -236,6 +258,8 @@
   background-color: #e5e7eb;
   margin-bottom: 10px;
   gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .tab-btn {
@@ -269,65 +293,7 @@
   margin-bottom: 4px;
 }
 
-/* 完整转写段落 */
-.transcript-full {
-  margin-top: 4px;
-}
-
-.transcript-line {
-  font-size: 13px;
-  color: #374151;
-  line-height: 1.6;
-  margin: 0 0 6px;
-}
-
-/* 详情区 Tabs 容器 */
-.detail-tabs {
-  margin-top: 12px;
-}
-
-/* Tab 行 */
-.tabs {
-  display: inline-flex;
-  padding: 4px;
-  border-radius: 999px;
-  background-color: #e5e7eb;
-  margin-bottom: 10px;
-  gap: 4px;
-}
-
-.tab-btn {
-  border: none;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  background: transparent;
-  color: #6b7280;
-  transition: 0.16s all ease-out;
-  white-space: nowrap;
-}
-
-.tab-btn.active {
-  background-color: #ffffff;
-  color: #111827;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
-}
-
-/* 总结要点列表 */
-.summary-list {
-  margin: 6px 0 0;
-  padding-left: 18px;
-}
-
-.summary-list li {
-  font-size: 13px;
-  color: #374151;
-  margin-bottom: 4px;
-}
-
-/* 完整转写样式 */
+/* ===== 完整转写样式 ===== */
 .transcript-full {
   margin-top: 6px;
   display: flex;
@@ -374,12 +340,13 @@
   flex: 1;
 }
 
+/* ===== 思维导图区域 ===== */
 .mindmap-wrapper {
   position: relative;
 }
 
 .mindmap-container {
-  /* 这里高度宽度你已经在 inline style 写了，也可以移到这边 */
+  /* 如有需要，可以把 inline style 的宽高挪过来 */
 }
 
 .mindmap-controls {
@@ -409,4 +376,37 @@
 
 .mindmap-btn:hover {
   background: rgba(255, 255, 255, 0.18);
+}
+
+/* ====== 响应式：平板及以上（>=768px） ====== */
+@media (min-width: 768px) {
+  .page-header {
+    padding: 12px 24px;
+  }
+
+  .page-main {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+  }
+
+  .sidebar {
+    border-bottom: none;
+    border-right: 1px solid #e5e7eb;
+    max-height: none;
+  }
+
+  .content {
+    padding: 20px 24px 32px;
+  }
+
+  .content-title {
+    font-size: 22px;
+  }
+}
+
+/* ====== 更大屏幕（>=1200px）可按需再微调 ====== */
+@media (min-width: 1200px) {
+  .content {
+    padding: 24px 32px 40px;
+  }
 }
