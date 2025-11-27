@@ -1,6 +1,9 @@
 // src/mockRecordings.ts
 import type { Recording } from './types'
 
+// 统一生成音频基础路径
+const audioBase = `${import.meta.env.BASE_URL}audio/`
+
 export const mockRecordings: Recording[] = [
     {
         id: 'rec-001',
@@ -9,7 +12,8 @@ export const mockRecordings: Recording[] = [
         durationSeconds: 5025, // 01:23:45
         speaker: 'Lucas',
         tags: ['周会', '产品评审'],
-        audioUrl: '/audio/my-meeting-2025-11-25.mp3', // 先占位
+        // ✅ 这里改成用 BASE_URL
+        audioUrl: `${audioBase}my-meeting-2025-11-25.mp3`,
 
         isShared: true,
         shareUrl: 'https://share.mygithub.ai/rec/rec-001',
@@ -26,7 +30,6 @@ export const mockRecordings: Recording[] = [
         transcriptPreview:
             '我们今天主要讨论一下 Q4 版本的整体规划，重点还是放在路线推荐能力上……',
 
-        // ✅ 带时间戳的完整转写示例
         transcriptSegments: [
             {
                 id: 'seg-001',
@@ -61,7 +64,8 @@ export const mockRecordings: Recording[] = [
         durationSeconds: 2700,
         speaker: 'PM 小王',
         tags: ['用户访谈', '需求'],
-        audioUrl: '/audio/my-meeting-2025-11-25.mp3',
+        // ✅ 同样改一下
+        audioUrl: `${audioBase}my-meeting-2025-11-25.mp3`,
 
         isShared: false,
 
